@@ -3,6 +3,8 @@ use nom::{
     multi::separated_list, sequence::separated_pair, IResult,
 };
 
+use crate::parser::types::LogEventDateTime;
+
 fn parse_date(input: &str) -> IResult<&str, (&str, &str)> {
     separated_pair(digit1, tag("/"), digit1)(input)
 }
@@ -29,23 +31,7 @@ fn test_parse_time() {
     assert_eq!(res2, Ok((" ", vec!["00", "56", "59", "186"])));
 }
 
-#[derive(Debug, PartialEq)]
-struct LogEventDateTime<'a> {
-    // The month an event occurred
-    month: &'a str,
-    // The day of the month an event occurred
-    day: &'a str,
-    // The hour an event occured
-    hour: &'a str,
-    // The minute an event occured
-    minute: &'a str,
-    // The second event occured
-    second: &'a str,
-    // The millisecond event occured
-    ms: &'a str,
-}
-
-fn parse_date_time<'a>(input: &'a str) -> IResult<&str, LogEventDateTime> {
+pub fn parse_date_time<'a>(input: &'a str) -> IResult<&str, LogEventDateTime> {
     let parser = separated_pair(parse_date, tag(" "), parse_time);
 
     map(parser, |s| {
@@ -72,8 +58,8 @@ fn test_parse_date_time() {
         Ok((
             "",
             LogEventDateTime {
-                day: "17",
                 month: "10",
+                day: "17",
                 hour: "00",
                 minute: "53",
                 second: "45",

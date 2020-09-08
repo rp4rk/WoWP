@@ -55,7 +55,7 @@ fn square_grouped_cells(input: &str) -> IResult<&str, LogCell> {
     map(parser, |v| LogCell::Array(v))(input)
 }
 
-pub fn parse_log_line(input: &str) -> IResult<&str, Vec<LogCell>> {
+pub fn parse_log_csv(input: &str) -> IResult<&str, Vec<LogCell>> {
     separated_list(tag(","), parse_log_cell)(input)
 }
 
