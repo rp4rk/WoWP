@@ -1,9 +1,33 @@
 mod matcher;
 mod parser;
 
+use linereader::LineReader;
 use matcher::loader::{create_hashmap, load_templates, map_to_json};
-use serde_json::{from_str, Result, Value};
+use serde_json::Result;
+use serde_json::Value;
+use std::collections::HashMap;
+use std::fs::File;
 use std::path::Path;
+use std::str::from_utf8;
+
+fn read_lines(map: HashMap<String, Value>) {
+    let file = File::open("WoWCombatLog.txt").expect("open");
+
+    let mut reader = LineReader::new(file);
+
+    while let Some(line) = reader.next_line() {
+        let line = line.expect("Read error");
+        let string = from_utf8(line).expect("parse error");
+        let test = parser::parse_log_line(string);
+
+        // V BROKEN V
+        // println!("{:?}", test.1[0]);
+        // let key = test.1[0]
+        // if map.contains_key(test.1[0]) {
+        //     println!("Match!")
+        // }
+    }
+}
 
 fn main() -> Result<()> {
     let res = load_templates(Path::new("./src/event_structures")).unwrap();
@@ -11,37 +35,7 @@ fn main() -> Result<()> {
 
     let map = create_hashmap(json);
 
-    println!("{:?}", map);
-
-    //     let event = r#"10/17 00:47:53.606  COMBATANT_INFO,Player-3661-080CCC9D,0,898,8744,17542,1322,0,0,0,2331,2331,2331,93,0,720,720,720,0,740,387,387,387,3797,253,(267116,199528,270581,131894,109215,199530,199532),(208683,204190,53480,205691),[365,450,0,211,450,0,30,450,0,83,450,0,13,450,0,367,435,2,211,435,2,30,435,2,15,435,2,13,435,2,211,420,4,366,420,4,30,420,4,15,420,4,13,420,4],[14,3,0,32,3,1,5,3,2],[(159374,450,(),(5448,1617,4786,6270),()),(158075,469,(),(6316,4932,4933),()),(169588,435,(),(4823,1502,4786,6268),()),(0,0,(),(),()),(167767,420,(),(6300,6298,1502,4786,6263),()),(170369,425,(),(6300,4802,6294,1512,4786),(168639,120)),(168727,440,(),(1681),(168639,120)),(170142,425,(),(6300,4802,6294,1512,4786),(168639,120)),(167774,425,(),(6300,4802,6294,1512,4786),(168639,120)),(170335,425,(),(6300,4802,6294,1512,4786),(168637,120)),(158318,445,(6108,0,0),(5010,1612,5850,4784),()),(169076,415,(6108,0,0),(4779,1472,4786),()),(167555,415,(),(),(167672,415,168743,415,168631,404)),(155881,430,(),(5010,4802,42,1602,4786),(168639,120)),(159293,430,(),(5010,4802,1602,4786),(168639,120)),(168273,445,(5955,0,0),(4800,1517,4786),()),(0,0,(),(),()),(0,0,(),(),())],[Player-3661-080CCC9D,297039,Player-3661-07DA7E9F,6673,Player-3661-07DAB733,21562,Player-3661-080CCC9D,295246,Player-3661-080CCC9D,295834,Player-3661-080CCC9D,298836,Player-3661-07E0DAE4,1459]"#;
-
-    //     let (_, cells) = parse_log_line(event);
-
-    //     let json = r#"{
-    //     "playerID": 1,
-    //     "talents": 25
-    //   }
-    //   "#;
-
-    //     let v: Value = from_str(json)?;
-
-    //     let r: Vec<(&String, &LogCell)> = v
-    //         .as_object()
-    //         .unwrap()
-    //         .iter()
-    //         .map(|(label, idx)| {
-    //             let cell_idx = idx.as_i64().unwrap() as usize;
-    //             let target_cell = &cells[cell_idx];
-    //             (label, target_cell)
-    //         })
-    //         .collect();
-
-    //     println!("{:?}", r);
-
-    //     // for (key, value) in v.as_object().unwrap() {
-    //     //     println!("{:?}", key);
-    //     //     println!("{:?}", value);
-    //     // }
+    read_lines(map);
 
     Ok(())
 }
