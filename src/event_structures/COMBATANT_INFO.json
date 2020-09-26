@@ -1,5 +1,41 @@
 {
   "playerID": 1,
-  "playerName": 2,
-  "talents": 25
+  "strength": 2,
+  "agility": 3,
+  "stamina": 4,
+  "intelligence": 5,
+  "dodge": 6,
+  "parry": 7,
+  "block": 8,
+  "critMelee": 9,
+  "critRanged": 10,
+  "critSpell": 11,
+  "speed": 12,
+  "lifesteal": 13,
+  "hasteMelee": 14,
+  "hasteRanged": 15,
+  "hasteSpell": 16,
+  "avoidance": 17,
+  "mastery": 18,
+  "versatilityDamageDone": 19,
+  "versatilityHealingDone": 20,
+  "versatilityDamageTaken": 21,
+  "currentSpecID": 24,
+  "talents": 25,
+  "pvpTalents": 26,
+  "covenant": [
+    27,
+    {
+      "soulbindId": 0,
+      "covenantId": 1,
+      "soulbindPath": 3,
+      "conduits": 4
+    }
+  ],
+  "gear": [
+    28,
+    {
+      "itemId": 0
+    }
+  ]
 }
