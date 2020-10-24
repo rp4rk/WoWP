@@ -22,20 +22,5 @@
   "versatilityDamageTaken": 21,
   "currentSpecID": 24,
   "talents": 25,
-  "pvpTalents": 26,
-  "covenant": [
-    27,
-    {
-      "soulbindId": 0,
-      "covenantId": 1,
-      "soulbindPath": 3,
-      "conduits": 4
-    }
-  ],
-  "gear": [
-    28,
-    {
-      "itemId": 0
-    }
-  ]
+  "pvpTalents": 26
 }
