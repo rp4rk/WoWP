@@ -23,7 +23,6 @@ pub fn parse_log_cell(input: &str) -> IResult<&str, LogCell> {
     ))(input)
 }
 
-//
 fn grouped_cells(input: &str) -> IResult<&str, LogCell> {
     let parser = delimited(tag("("), separated_list(tag(","), parse_log_cell), tag(")"));
 

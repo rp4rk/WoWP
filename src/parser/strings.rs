@@ -73,4 +73,12 @@ mod tests {
     fn test_wrapped_cell() {
         assert_eq!(wrapped_cell("\"hey\""), Ok(("", "hey")));
     }
+
+    #[test]
+    fn test_wrapped_cell_with_space() {
+        assert_eq!(
+            wrapped_cell("\"Zolramus Necromancer\""),
+            Ok(("", "Zolramus Necromancer"))
+        )
+    }
 }

@@ -1,7 +1,7 @@
 use crate::parser::types::LogCell;
 use nom::{
     bytes::complete::tag,
-    character::complete::digit1,
+    character::complete::{alphanumeric1, digit1},
     combinator::{map, opt, recognize},
     sequence::{pair, tuple},
     IResult,
@@ -23,10 +23,14 @@ pub fn number_cell(input: &str) -> IResult<&str, LogCell> {
 
 // Parses hex numbers such as 0x8
 pub fn hex_cell(input: &str) -> IResult<&str, LogCell> {
-    let parser = tuple((tag("0x"), digit1));
+    let parser = tuple((tag("0x"), alphanumeric1));
     map(parser, |s| {
-        let n = i64::from_str_radix(s.1, 16).unwrap();
-        LogCell::Number(n as f64)
+        let n = i64::from_str_radix(s.1, 16);
+
+        match n {
+            Ok(v) => LogCell::Number(v as f64),
+            Err(e) => panic!(e),
+        }
     })(input)
 }
 
@@ -51,5 +55,7 @@ mod tests {
     #[test]
     fn text_hex_cell() {
         assert_eq!(hex_cell("0x8"), Ok(("", LogCell::Number(8.0))));
+        assert_eq!(hex_cell("0x511"), Ok(("", LogCell::Number(1297.0))));
+        assert_eq!(hex_cell("0xa48"), Ok(("", LogCell::Number(2632.0))));
     }
 }
