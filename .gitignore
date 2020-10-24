@@ -2,3 +2,4 @@ target
 WoWCombatLog*
 combat_log*
 flamegraph.svg
+perf.data*

@@ -4,11 +4,24 @@ mod parser;
 use linereader::LineReader;
 use matcher::loader::{create_hashmap, load_templates, map_to_json};
 use parser::types::{LogCell, LogEventDateTime};
-use serde_json::{Result, Value};
+use serde_json::Value;
+use snafu::{ResultExt, Snafu};
 use std::collections::HashMap;
-use std::fs::File;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::str::from_utf8;
+use std::{fs::File, io};
+
+#[derive(Debug, Snafu)]
+enum WowpError {
+    #[snafu(display("Failed to load event templates from {}: {}", path.display(), source))]
+    TemplateLoadFailed { source: io::Error, path: PathBuf },
+    #[snafu(display("Failed to find an event map"))]
+    EventMapNotFound,
+    #[snafu(display("Failed to serialize event"))]
+    SerializationFailed { source: serde_json::Error },
+}
+
+type Result<T, E = WowpError> = std::result::Result<T, E>;
 
 fn create_json_representation(
     event_map: &Value,
@@ -16,10 +29,10 @@ fn create_json_representation(
     time: LogEventDateTime,
     event: Vec<LogCell>,
 ) -> Result<String> {
-    let event_map_obj = match event_map.as_object() {
-        Some(v) => v,
-        None => panic!("Could not determine an event map for some reason"),
-    };
+    // Unwrap the event map
+    let event_map_obj = event_map
+        .as_object()
+        .ok_or_else(|| WowpError::EventMapNotFound)?;
 
     let mut hmap = event_map_obj.into_iter().fold(HashMap::new(), |mut h, v| {
         {
@@ -46,14 +59,18 @@ fn create_json_representation(
         h
     });
 
+    // Inserts the event location by default at index 0
+    // This allows us to omit it in templates by default
     let key = &"eventType".to_string();
     let value = &LogCell::Str(event_type.as_str());
     hmap.insert(key, value);
 
-    return serde_json::to_string_pretty(&hmap);
+    let json_string = serde_json::to_string_pretty(&hmap).context(SerializationFailed)?;
+
+    Ok(json_string)
 }
 
-fn read_lines(map: HashMap<String, Value>) {
+fn parse_lines(map: HashMap<String, Value>) {
     let file = File::open("WoWCombatLog.txt").expect("open");
     let mut reader = LineReader::new(file);
 
@@ -74,28 +91,36 @@ fn read_lines(map: HashMap<String, Value>) {
                     parsed_line.1,
                 ),
                 None => {
-                    println!("Unhandled event {:#?}", v);
+                    eprintln!("Unhandled event {:#?}", v);
                     return;
                 }
             };
 
-            match v {
-                Ok(v) => println!("{},", v),
-                Err(e) => panic!(e),
-            }
+            let newV = match v {
+                Ok(v) => v,
+                Err(e) => {
+                    eprintln!("{:#?}", e);
+                    panic!("fuck")
+                }
+            };
+
+            println!("{}", newV);
         }
     }
     println!("[]]");
 }
 
 fn main() -> Result<()> {
-    let res =
-        load_templates(Path::new("./src/event_structures")).expect("Can't find event structures.");
-    let json = map_to_json(res);
+    // Loads event templates to be used to match against events
+    let path = Path::new("./src/event_structures");
+    let event_template_paths = load_templates(path).context(TemplateLoadFailed { path })?;
 
-    let map = create_hashmap(json);
+    // Turns the provided paths into JSON maps
+    let event_json_maps = map_to_json(event_template_paths);
+    let event_maps = create_hashmap(event_json_maps);
 
-    read_lines(map);
+    // Start processing lines
+    parse_lines(event_maps);
 
     Ok(())
 }
