@@ -26,6 +26,7 @@ jobs:
       - name: Build project
         shell: bash
         run: |
+          shopt -s extglob
           cargo build --release --locked
           7z a wowp.zip event_templates target/release/*(wowp|wowp.exe)
       - name: Upload binary to release
