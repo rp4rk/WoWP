@@ -19,7 +19,7 @@ jobs:
             asset_name: wowp-macos-amd64
           - os: windows-latest
             artifact_name: wowp.exe
-            asset_name: wowp-win-amd64
+            asset_name: wowp-win-amd64.exe
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
