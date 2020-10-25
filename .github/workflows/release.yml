@@ -28,7 +28,8 @@ jobs:
         run: |
           shopt -s extglob
           cargo build --release --locked
-          7z a wowp.zip event_templates target/release/*(wowp|wowp.exe)
+          mv target/release/*(wowp|wowp.exe) .
+          7z a wowp.zip event_templates ./*(wowp|wowp.exe) README.md LICENSE.md
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v1-release
         with:
