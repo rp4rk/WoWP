@@ -1,6 +1,7 @@
 mod matcher;
 mod parser;
 
+use clap::Clap;
 use linereader::LineReader;
 use matcher::loader::{create_hashmap, load_templates, map_to_json};
 use parser::types::{LogCell, LogEventDateTime};
@@ -11,10 +12,26 @@ use std::path::{Path, PathBuf};
 use std::str::{from_utf8, Utf8Error};
 use std::{fs::File, io};
 
+#[derive(Clap)]
+#[clap(version = "0.10", author = "Ryan Park")]
+pub struct Opts {
+    // Path to event structures
+    #[clap(short, long, default_value = "./src/event_structures")]
+    event_structures: String,
+    // Path to WoWCombatLog.txt
+    #[clap(short, long, default_value = "./WoWCombatLog.txt")]
+    combat_log: String,
+    // Parse trash
+    #[clap(short, long)]
+    parse_trash: bool,
+}
+
 #[derive(Debug, Snafu)]
 enum WowpError {
     #[snafu(display("Failed to load event templates from {}: {}", path.display(), source))]
     TemplateLoadFailed { source: io::Error, path: PathBuf },
+    #[snafu(display("Failed to load combat log from {}: {}", path.display(), source))]
+    LogLoadFailed { source: io::Error, path: PathBuf },
     #[snafu(display("Failed to find an event map"))]
     EventMapNotFound,
     #[snafu(display("Failed to serialize event"))]
@@ -86,7 +103,10 @@ fn whitelisted_events() -> HashSet<String> {
 }
 
 fn parse_lines(map: HashMap<String, Value>, line_reader_config: LineReaderConfig) -> Result<()> {
-    let file = File::open("WoWCombatLog.txt").expect("open");
+    let log_file_path = Path::new(line_reader_config.log_file_path.as_str());
+    let file = File::open(log_file_path).context(LogLoadFailed {
+        path: log_file_path,
+    })?;
     let mut reader = LineReader::new(file);
 
     // Setup parsing configuration
@@ -115,6 +135,8 @@ fn parse_lines(map: HashMap<String, Value>, line_reader_config: LineReaderConfig
                     parsed_line.0,
                     parsed_line.1,
                 )?;
+
+                println!("{}", event_json);
             }
 
             if event_type == "ENCOUNTER_END" && line_reader_config.parse_trash == false {
@@ -128,17 +150,23 @@ fn parse_lines(map: HashMap<String, Value>, line_reader_config: LineReaderConfig
 
 struct LineReaderConfig {
     parse_trash: bool,
+    log_file_path: String,
 }
 
 impl Default for LineReaderConfig {
     fn default() -> LineReaderConfig {
-        LineReaderConfig { parse_trash: false }
+        LineReaderConfig {
+            parse_trash: false,
+            log_file_path: "./WoWCombatLog.txt".to_string(),
+        }
     }
 }
 
 fn main() -> Result<()> {
+    let opts: Opts = Opts::parse();
+
     // Loads event templates to be used to match against events
-    let path = Path::new("./src/event_structures");
+    let path = Path::new(opts.event_structures.as_str());
     let event_template_paths = load_templates(path).context(TemplateLoadFailed { path })?;
 
     // Turns the provided paths into JSON maps
@@ -147,7 +175,8 @@ fn main() -> Result<()> {
 
     // Determine configuration for reading lines
     let line_reader_config = LineReaderConfig {
-        // parse_trash: true,
+        log_file_path: opts.combat_log,
+        parse_trash: opts.parse_trash,
         ..Default::default()
     };
 

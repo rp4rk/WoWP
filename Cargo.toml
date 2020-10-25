@@ -1,5 +1,5 @@
 [package]
-name = "recursive-parse"
+name = "wowp"
 version = "0.1.0"
 authors = ["ryan"]
 edition = "2018"
@@ -13,4 +13,4 @@ serde = { version = "1.0.115", features = ["derive"]}
 serde_json = "1.0.57"
 linereader = "0.4.0"
 snafu = "0.6.9"
-
+clap = "3.0.0-beta.2"
