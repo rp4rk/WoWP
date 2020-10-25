@@ -1,0 +1,4 @@
+template-update:
+  - src/event_structures/*
+parser-update:
+  - src/parser/*
