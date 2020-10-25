@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           cargo build --release --locked
-          7z a wowp.zip event_templates target/release/wowp target/release/*.exe
+          7z a wowp.zip event_templates target/release/*(wowp|wowp.exe)
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v1-release
         with:
