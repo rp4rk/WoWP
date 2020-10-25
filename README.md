@@ -1,5 +1,7 @@
 # WoWP
 
+## ![Rust](https://github.com/rp4rk/WoWP/workflows/Rust/badge.svg)
+
 ---
 
 Combat Log Parser for World of Warcraft
