@@ -12,13 +12,13 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            artifact_name: wowp
+            artifact_name: wowp.zip
             asset_name: wowp-linux-amd64.zip
           - os: macos-latest
-            artifact_name: wowp
+            artifact_name: wowp.zip
             asset_name: wowp-macos-amd64.zip
           - os: windows-latest
-            artifact_name: wowp.exe
+            artifact_name: wowp.zip
             asset_name: wowp-win-amd64.zip
     steps:
       - name: Checkout code
