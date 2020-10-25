@@ -17,8 +17,8 @@ jobs:
           - os: macos-latest
             artifact_name: wowp
             asset_name: wowp-macos-amd64
-          - os: windows-latest
-            artifact_name: wowp
+          - os: win-latest
+            artifact_name: wowp.exe
             asset_name: wowp-win-amd64
     steps:
       - name: Checkout code
