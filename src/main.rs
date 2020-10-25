@@ -16,8 +16,8 @@ use std::{fs::File, io};
 #[clap(version = "0.10", author = "Ryan Park")]
 pub struct Opts {
     // Path to event structures
-    #[clap(short, long, default_value = "./src/event_structures")]
-    event_structures: String,
+    #[clap(short, long, default_value = "./event_templates")]
+    event_templates: String,
     // Path to WoWCombatLog.txt
     #[clap(short, long, default_value = "./WoWCombatLog.txt")]
     combat_log: String,
@@ -151,12 +151,14 @@ fn parse_lines(map: HashMap<String, Value>, line_reader_config: LineReaderConfig
 struct LineReaderConfig {
     parse_trash: bool,
     log_file_path: String,
+    templates_path: String,
 }
 
 impl Default for LineReaderConfig {
     fn default() -> LineReaderConfig {
         LineReaderConfig {
             parse_trash: false,
+            templates_path: "./event_templates".to_string(),
             log_file_path: "./WoWCombatLog.txt".to_string(),
         }
     }
@@ -165,20 +167,21 @@ impl Default for LineReaderConfig {
 fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
 
+    // Determine configuration
+    let line_reader_config = LineReaderConfig {
+        log_file_path: opts.combat_log,
+        parse_trash: opts.parse_trash,
+        templates_path: opts.event_templates,
+        ..Default::default()
+    };
+
     // Loads event templates to be used to match against events
-    let path = Path::new(opts.event_structures.as_str());
+    let path = Path::new(line_reader_config.templates_path.as_str());
     let event_template_paths = load_templates(path).context(TemplateLoadFailed { path })?;
 
     // Turns the provided paths into JSON maps
     let event_json_maps = map_to_json(event_template_paths);
     let event_maps = create_hashmap(event_json_maps);
-
-    // Determine configuration for reading lines
-    let line_reader_config = LineReaderConfig {
-        log_file_path: opts.combat_log,
-        parse_trash: opts.parse_trash,
-        ..Default::default()
-    };
 
     // Hand off to line parser
     parse_lines(event_maps, line_reader_config);
