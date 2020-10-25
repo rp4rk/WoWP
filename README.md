@@ -33,18 +33,18 @@ Running WoWP requires three different components,
 
 Once you have these components, simply execute the binary and pass in the relevant flags,
 
-`./wowp --event-structures="src/event_structures"`
+`./wowp --event-structures="./event_templates"`
 
 After which, JSON will start being streamed to stdout for you to use, e.g.
 
-`./wowp --event-structures="src/event_structures" > combat-log.json`
+`./wowp --event-structures="./event_templates" > combat-log.json`
 
 ## Flags
 
 - `-p` will parse trash events, otherwise only encounters are parsed along with zone changes and the combat log version event.
   - Defaults to false
 - `--event-structures="path"` The path to a set of complete event structures
-  - Defaults to `./src/event_structures`
+  - Defaults to `./event_templates`
 - `--combat-log="path"` The path to a combat log file
 - Defaults to `./WoWCombatLog.txt`
 

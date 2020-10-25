@@ -1,4 +1,4 @@
 template-update:
-  - src/event_structures/*
+  - event_structures/*
 parser-update:
   - src/parser/*

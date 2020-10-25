@@ -13,18 +13,21 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: wowp
-            asset_name: wowp-linux-amd64
+            asset_name: wowp-linux-amd64.zip
           - os: macos-latest
             artifact_name: wowp
-            asset_name: wowp-macos-amd64
+            asset_name: wowp-macos-amd64.zip
           - os: windows-latest
             artifact_name: wowp.exe
-            asset_name: wowp-win-amd64.exe
+            asset_name: wowp-win-amd64.zip
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build project
-        run: cargo build --release --locked
+        shell: bash
+        run: |
+          cargo build --release --locked
+          7z a wowp.zip event_templates target/release/wowp target/release/wowp.exe
       - name: Upload binary to release
         uses: svenstaro/upload-release-action@v1-release
         with:
