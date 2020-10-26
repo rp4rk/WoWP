@@ -184,7 +184,7 @@ fn main() -> Result<()> {
     let event_maps = create_hashmap(event_json_maps);
 
     // Hand off to line parser
-    parse_lines(event_maps, line_reader_config);
+    parse_lines(event_maps, line_reader_config)?;
 
     Ok(())
 }
