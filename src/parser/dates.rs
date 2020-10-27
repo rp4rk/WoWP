@@ -1,6 +1,9 @@
 use nom::{
-    branch::alt, bytes::complete::tag, character::complete::digit1, combinator::map,
-    multi::separated_list, sequence::separated_pair, IResult,
+    bytes::complete::tag,
+    character::complete::digit1,
+    combinator::map,
+    sequence::{separated_pair, tuple},
+    IResult,
 };
 
 use crate::parser::types::LogEventDateTime;
@@ -16,10 +19,8 @@ fn test_parse_date() {
     assert_eq!(res, Ok(("", ("10", "17"))));
 }
 
-fn parse_time(input: &str) -> IResult<&str, Vec<&str>> {
-    let delimiter_parser = alt((tag(":"), tag(".")));
-
-    separated_list(delimiter_parser, digit1)(input)
+fn parse_time(input: &str) -> IResult<&str, (&str, &str, &str, &str, &str, &str, &str)> {
+    tuple((digit1, tag(":"), digit1, tag(":"), digit1, tag("."), digit1))(input)
 }
 
 #[test]
@@ -27,8 +28,8 @@ fn test_parse_time() {
     let res = parse_time("00:56:59.186");
     let res2 = parse_time("00:56:59.186 ");
 
-    assert_eq!(res, Ok(("", vec!["00", "56", "59", "186"])));
-    assert_eq!(res2, Ok((" ", vec!["00", "56", "59", "186"])));
+    assert_eq!(res, Ok(("", ("00", ":", "56", ":", "59", ".", "186"))));
+    assert_eq!(res2, Ok((" ", ("00", ":", "56", ":", "59", ".", "186"))));
 }
 
 pub fn parse_date_time<'a>(input: &'a str) -> IResult<&str, LogEventDateTime> {
@@ -41,10 +42,10 @@ pub fn parse_date_time<'a>(input: &'a str) -> IResult<&str, LogEventDateTime> {
         LogEventDateTime {
             month: month_data,
             day: day_data,
-            hour: time_data[0],
-            minute: time_data[1],
-            second: time_data[2],
-            ms: time_data[3],
+            hour: time_data.0,
+            minute: time_data.2,
+            second: time_data.4,
+            ms: time_data.6,
         }
     })(input)
 }

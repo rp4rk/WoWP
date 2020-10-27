@@ -8,19 +8,29 @@ use crate::parser::{
 };
 
 use nom::{
-    branch::alt, bytes::complete::tag, combinator::map, multi::separated_list, sequence::delimited,
-    IResult,
+    bytes::complete::tag, combinator::map, multi::separated_list, sequence::delimited, IResult,
 };
 
 // Largest cell unit
 pub fn parse_log_cell(input: &str) -> IResult<&str, LogCell> {
-    alt((
-        square_grouped_cells,
-        grouped_cells,
-        hex_cell,
-        number_cell,
-        string_cell,
-    ))(input)
+    match &input[0..1] {
+        "[" => square_grouped_cells(input),
+        "(" => grouped_cells(input),
+        "0" => match &input[0..2] {
+            "0x" => hex_cell(input),
+            _ => number_cell(input),
+        },
+        "1" => number_cell(input),
+        "2" => number_cell(input),
+        "3" => number_cell(input),
+        "4" => number_cell(input),
+        "5" => number_cell(input),
+        "6" => number_cell(input),
+        "7" => number_cell(input),
+        "8" => number_cell(input),
+        "9" => number_cell(input),
+        _ => string_cell(input),
+    }
 }
 
 fn grouped_cells(input: &str) -> IResult<&str, LogCell> {

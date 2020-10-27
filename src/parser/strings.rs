@@ -1,6 +1,5 @@
 use crate::parser::types::LogCell;
 use nom::{
-    branch::alt,
     bytes::complete::{tag, take_while1},
     character::complete::not_line_ending,
     combinator::{map, recognize},
@@ -47,9 +46,11 @@ pub fn emote_cell(input: &str) -> IResult<&str, &str> {
  * String cells include unwrapped and wrapped cells
  */
 pub fn string_cell(input: &str) -> IResult<&str, LogCell> {
-    let parser = alt((emote_cell, wrapped_cell, unwrapped_cell));
-
-    map(parser, |s| LogCell::Str(s))(input)
+    match &input[0..1] {
+        "|" => map(emote_cell, LogCell::Str)(input),
+        "\"" => map(wrapped_cell, LogCell::Str)(input),
+        _ => map(unwrapped_cell, LogCell::Str)(input),
+    }
 }
 
 #[cfg(test)]
