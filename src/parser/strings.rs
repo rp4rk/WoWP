@@ -1,6 +1,5 @@
 use crate::parser::types::LogCell;
 use nom::{
-    branch::alt,
     bytes::complete::{tag, take_while1},
     character::complete::not_line_ending,
     combinator::{map, recognize},
