@@ -29,6 +29,7 @@ pub fn parse_log_cell(input: &str) -> IResult<&str, LogCell> {
         "7" => number_cell(input),
         "8" => number_cell(input),
         "9" => number_cell(input),
+        "-" => number_cell(input),
         _ => string_cell(input),
     }
 }
