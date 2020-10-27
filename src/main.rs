@@ -1,6 +1,13 @@
 mod matcher;
 mod parser;
 
+#[cfg(not(target_env = "msvc"))]
+use jemallocator::Jemalloc;
+
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
+
 use clap::Clap;
 use linereader::LineReader;
 use matcher::loader::{create_hashmap, load_templates, map_to_json};
@@ -184,7 +191,7 @@ fn main() -> Result<()> {
     let event_maps = create_hashmap(event_json_maps);
 
     // Hand off to line parser
-    parse_lines(event_maps, line_reader_config);
+    parse_lines(event_maps, line_reader_config)?;
 
     Ok(())
 }
