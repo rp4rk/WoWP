@@ -1,6 +1,11 @@
 {
-  "sourceId": 1,
+  "sourceGUID": 1,
   "sourceName": 2,
-  "targetId": 5,
-  "targetName": 6
+  "sourceFlags": 3,
+  "sourceRaidFlags": 4,
+  "destGUID": 5,
+  "destName": 6,
+  "destFlags": 7,
+  "destRaidFlags": 8,
+  "missType": 9
 }

@@ -1,8 +1,13 @@
 {
-  "encounterId": 1,
-  "sourceId": 5,
-  "sourceName": 6,
-  "enchantId": 9,
-  "enchantName": 10,
-  "targetItem": 11
+  "sourceGUID": 1,
+  "sourceName": 2,
+  "sourceFlags": 3,
+  "sourceRaidFlags": 4,
+  "destGUID": 5,
+  "destName": 6,
+  "destFlags": 7,
+  "destRaidFlags": 8,
+  "spellName": 9,
+  "itemId": 10,
+  "itemName": 11
 }

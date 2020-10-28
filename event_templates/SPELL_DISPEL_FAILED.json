@@ -7,5 +7,10 @@
   "destName": 6,
   "destFlags": 7,
   "destRaidFlags": 8,
-  "recapId": 9
+  "spellId": 9,
+  "spellName": 10,
+  "spellSchool": 11,
+  "dispelId": 12,
+  "dispelName": 13,
+  "dispelSchool": 14
 }

@@ -1,3 +1,6 @@
 {
-  "mapId": 1
+  "mapId": 1,
+  "success": 2,
+  "keyLevel": 3,
+  "completionTime": 4
 }
