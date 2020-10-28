@@ -10,5 +10,14 @@
   "spellId": 9,
   "spellName": 10,
   "spellSchool": 11,
-  "missType": 12
+  "amount": 12,
+  "overkill": 13,
+  "school": 14,
+  "resisted": 15,
+  "blocked": 16,
+  "absorbed": 17,
+  "critical": 18,
+  "glaring": 19,
+  "crushing": 20,
+  "isOffHand": 21
 }

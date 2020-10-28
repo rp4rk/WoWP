@@ -1,7 +1,7 @@
 {
-  "sourceId": 1,
+  "sourceGUID": 1,
   "sourceName": 2,
-  "targetId": 3,
-  "targetName": 4,
+  "destGUID": 3,
+  "destName": 4,
   "message": 5
 }

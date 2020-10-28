@@ -7,5 +7,11 @@
   "destName": 6,
   "destFlags": 7,
   "destRaidFlags": 8,
-  "recapId": 9
+  "spellId": 9,
+  "spellName": 10,
+  "spellSchool": 11,
+  "missType": 12,
+  "isOffHand": 13,
+  "amountMissed": 14,
+  "critical": 15
 }
