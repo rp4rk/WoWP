@@ -2,7 +2,7 @@
 * Parsing for specific types of cells present in the comma separated list
 */
 use crate::parser::{
-    numbers::{hex_cell, number_cell},
+    numbers::{hex_cell, number_cell_master},
     strings::string_cell,
     types::LogCell,
 };
@@ -18,18 +18,18 @@ pub fn parse_log_cell(input: &str) -> IResult<&str, LogCell> {
         "(" => grouped_cells(input),
         "0" => match &input[0..2] {
             "0x" => hex_cell(input),
-            _ => number_cell(input),
+            _ => number_cell_master(input),
         },
-        "1" => number_cell(input),
-        "2" => number_cell(input),
-        "3" => number_cell(input),
-        "4" => number_cell(input),
-        "5" => number_cell(input),
-        "6" => number_cell(input),
-        "7" => number_cell(input),
-        "8" => number_cell(input),
-        "9" => number_cell(input),
-        "-" => number_cell(input),
+        "1" => number_cell_master(input),
+        "2" => number_cell_master(input),
+        "3" => number_cell_master(input),
+        "4" => number_cell_master(input),
+        "5" => number_cell_master(input),
+        "6" => number_cell_master(input),
+        "7" => number_cell_master(input),
+        "8" => number_cell_master(input),
+        "9" => number_cell_master(input),
+        "-" => number_cell_master(input),
         _ => string_cell(input),
     }
 }

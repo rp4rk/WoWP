@@ -20,6 +20,13 @@ pub enum LogCell<'a> {
     Number(f64),
     Str(&'a str),
     Array(Vec<LogCell<'a>>),
+    ComboPointSpender(ComboPointSpender),
+}
+#[derive(Debug, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ComboPointSpender {
+    pub energy: f64,
+    pub combo_points: f64,
 }
 
 #[derive(Debug, PartialEq)]
