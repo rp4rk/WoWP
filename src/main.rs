@@ -91,9 +91,14 @@ fn create_json_representation(
 
     // Inserts the event location by default at index 0
     // This allows us to omit it in templates by default
-    let key = &"eventType".to_string();
-    let value = &LogCell::Str(event_type.as_str());
-    hmap.insert(key, value);
+    let event_type_key = &"eventType".to_string();
+    let event_type_value = &LogCell::Str(event_type.as_str());
+    hmap.insert(event_type_key, event_type_value);
+
+    let timestamp_key = &"timestamp".to_string();
+    let timestamp = &time.to_string();
+    let timestamp_value = &LogCell::Str(timestamp);
+    hmap.insert(timestamp_key, timestamp_value);
 
     let json_string = serde_json::to_string_pretty(&hmap).context(SerializationFailed)?;
 

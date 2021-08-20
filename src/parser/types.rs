@@ -1,4 +1,6 @@
+use chrono::prelude::*;
 use serde::{self, Serialize, Serializer};
+use std::fmt;
 
 // This prevents floats with no remainder from displaying it
 fn integer_serialize<S>(x: &f64, s: S) -> Result<S::Ok, S::Error>
@@ -43,4 +45,20 @@ pub struct LogEventDateTime<'a> {
     pub second: &'a str,
     // The millisecond event occured
     pub ms: &'a str,
+}
+
+impl fmt::Display for LogEventDateTime<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let year = Local::now().year();
+        let month = self.month.parse::<u32>().unwrap();
+        let day = self.day.parse::<u32>().unwrap();
+        let hour = self.hour.parse::<u32>().unwrap();
+        let minute = self.minute.parse::<u32>().unwrap();
+        let second = self.second.parse::<u32>().unwrap();
+        let ms = self.ms.parse::<u32>().unwrap();
+        let date_time =
+            NaiveDate::from_ymd(year, month, day).and_hms_milli(hour, minute, second, ms);
+
+        write!(f, "{}", date_time.to_string())
+    }
 }

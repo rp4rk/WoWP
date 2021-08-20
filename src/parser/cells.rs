@@ -8,7 +8,7 @@ use crate::parser::{
 };
 
 use nom::{
-    bytes::complete::tag, combinator::map, multi::separated_list, sequence::delimited, IResult,
+    bytes::complete::tag, combinator::map, multi::separated_list1, sequence::delimited, IResult,
 };
 
 // Largest cell unit
@@ -35,7 +35,11 @@ pub fn parse_log_cell(input: &str) -> IResult<&str, LogCell> {
 }
 
 fn grouped_cells(input: &str) -> IResult<&str, LogCell> {
-    let parser = delimited(tag("("), separated_list(tag(","), parse_log_cell), tag(")"));
+    let parser = delimited(
+        tag("("),
+        separated_list1(tag(","), parse_log_cell),
+        tag(")"),
+    );
 
     map(parser, |v| LogCell::Array(v))(input)
 }
@@ -60,13 +64,17 @@ fn test_grouped_cell() {
 }
 
 fn square_grouped_cells(input: &str) -> IResult<&str, LogCell> {
-    let parser = delimited(tag("["), separated_list(tag(","), parse_log_cell), tag("]"));
+    let parser = delimited(
+        tag("["),
+        separated_list1(tag(","), parse_log_cell),
+        tag("]"),
+    );
 
     map(parser, |v| LogCell::Array(v))(input)
 }
 
 pub fn parse_log_csv(input: &str) -> IResult<&str, Vec<LogCell>> {
-    separated_list(tag(","), parse_log_cell)(input)
+    separated_list1(tag(","), parse_log_cell)(input)
 }
 
 #[test]
